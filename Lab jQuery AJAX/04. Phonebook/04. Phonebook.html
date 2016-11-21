@@ -1,0 +1,83 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<h1>Phonebook</h1>
+<ul id="phonebook"></ul>
+<button id="btnLoad">Load</button>
+
+<h2>Create Contact</h2>
+Person: <input type="text" id="person" />
+<br>
+Phone: <input type="text" id="phone" />
+<br>
+<button id="btnCreate">Create</button>
+
+<script>
+
+    $(function (){
+
+        $('#btnLoad').click(loadContacts);
+        $('#btnCreate').click(createContact);
+
+        let baseUrl = 'https://phonebook-17066.firebaseio.com/phonebook';
+
+        function loadContacts (){
+
+            $('#phonebook').empty();
+            $.get(baseUrl + '.json')
+                    .then (displayContacts)
+                    .catch(displayError);
+
+        }
+
+        function displayError(){
+
+            $('#phonebook').append($('<li>Error</li>'));
+        }
+
+
+        function displayContacts(contacts){
+
+            for (let key in contacts) {
+
+                let person  = contacts[key]['person'];
+                let phone = contacts[key]['phone'];
+                let li = $('<li>');
+
+                li.text(person + ': ' + phone + ' ');
+                $('#phonebook').append(li);
+                li.append($('<button>Delete</button>').click(function(){deleteContact(key)}));
+
+
+            }
+
+        }
+
+        function createContact(){
+
+            let newContactJSON = JSON.stringify({
+
+                person: $('#person').val(),
+                phone: $('#phone').val()
+
+            });
+
+            $.post(baseUrl + '.json', newContactJSON).then(loadContacts).catch(displayError);
+            $('#person').val('');
+            $('#phone').val('');
+
+        }
+
+        function deleteContact(key) {
+
+            let request = {
+                method: 'DELETE',
+                url: baseUrl + '/' + key + '.json'
+            }
+
+            $.ajax(request).then(loadContacts).catch(displayError);
+
+        }
+
+    })
+
+
+</script>
