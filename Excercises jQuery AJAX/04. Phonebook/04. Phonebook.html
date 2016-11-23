@@ -12,12 +12,12 @@ Phone: <input type="text" id="phone" />
 
 <script>
 
-    $(function (){
+    function solve (){
 
         $('#btnLoad').click(loadContacts);
         $('#btnCreate').click(createContact);
 
-        let baseUrl = 'https://phonebook-17066.firebaseio.com/phonebook';
+        let baseUrl = 'https://phonebook-nakov.firebaseio.com/phonebook';
 
         function loadContacts (){
 
@@ -77,7 +77,7 @@ Phone: <input type="text" id="phone" />
 
         }
 
-    })
+    }
 
 
 </script>

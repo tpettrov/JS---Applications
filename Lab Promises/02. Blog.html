@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+<h1>All Posts</h1>
+<button id="btnLoadPosts">Load Posts</button>
+<select id="posts"></select>
+<button id="btnViewPost">View</button>
+<h1 id="post-title">Post Details</h1>
+<ul id="post-body"></ul>
+<h2>Comments</h2>
+<ul id="post-comments"></ul>
+<script src="solution.js"></script>
+<script>
+    $(document).ready(attachEvents);
+
+
+
+    function  attachEvents(){
+
+
+        const kinveyAppId = "kid_BJYn2umfx";
+        const serviceUrl = "https://baas.kinvey.com/appdata/" + kinveyAppId;
+        const kinveyUsername = "guest";
+        const kinveyPassword = "guest";
+        //const base64auth = (new Buffer(kinveyUsername + ":" + kinveyPassword)).toString('base64');
+        const base64auth = btoa(kinveyUsername + ":" + kinveyPassword);
+        const authHeaders = { "Authorization": "Basic " + base64auth };
+
+        $('#btnLoadPosts').click(loadPosts);
+        $('#btnViewPost').click(viewPosts);
+
+
+        function loadPosts(){
+
+            $.get({
+                url: `https://baas.kinvey.com/appdata/kid_BJYn2umfx/posts`,
+                headers: authHeaders
+            }).then(loadSelect);
+
+        }
+
+        function loadSelect(result){
+
+            for(let post of result) {
+
+                let option = $(`<option value="${post._id}">${post.title}</option>`);
+                $('#posts').append(option);
+
+            }
+
+
+        }
+
+        function viewPosts(){
+
+            $.get({
+                url: 'https://baas.kinvey.com/appdata/kid_BJYn2umfx/posts/' + $('#posts').val(),
+                headers: authHeaders
+            }).then(loadBodyTitle).then(loadComments);
+
+
+        }
+
+        function loadBodyTitle(post){
+
+            $('#post-title').text(post.title);
+            $('#post-body').text(post.body);
+
+
+        };
+
+        function loadComments(){
+
+            $('#post-comments').text('');
+
+            $.get({
+
+                url: `https://baas.kinvey.com/appdata/kid_BJYn2umfx/comments?query={"post_id":"${$('#posts').val()}"}`,
+                headers: authHeaders
+        }).then(loadUl);
+
+            function loadUl(comments){
+
+                for(let comment of comments){
+
+                    let li = $('<li></li>').text(comment.text);
+                    $('#post-comments').append(li);
+
+                }
+
+            }
+
+
+        }
+
+        return attachEvents;
+
+    }
+</script>
+</body>
+</html>
