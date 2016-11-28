@@ -77,10 +77,10 @@ function attachEvents(){
         });
 
         $('.purchase').click(function(){
-            let id = $(this).parents('.venue')[0].id;
+            var id = $(this).parents('.venue')[0].id;
             let name = $(this).parents('.venue').find('.venue-name').text();
             let price = $(this).parents('.venue').find('.venue-price').text();
-            let qty = $(this).parents('.venue').find('.quantity option:selected').text();
+            var qty = $(this).parents('.venue').find('.quantity option:selected').text();
 
             $('#venue-info').empty();
 
@@ -93,19 +93,16 @@ function attachEvents(){
                 <input type="button" value="Confirm" id="confirmBtn">
                 </div>`);
 
+            $('#confirmBtn').on('click',function(){
 
-            $('#confirmBtn').on('click', confirmer(id, qty));
-
-            function confirmer(id, qty) {
                 $.post({
                     url: `https://baas.kinvey.com/rpc/kid_BJ_Ke8hZg/custom/purchase?venue=${id}&qty=${qty}`,
                     headers: authHeaders
                 }).then(displayConfirmation)
-
-            }
-
-
+            });
         })
+
+
 
     }
 
