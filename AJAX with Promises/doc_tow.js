@@ -64,6 +64,7 @@ function solve(){
        let id  = $(this).parent()[0].id;
         $.ajax({
             type: 'DELETE',
+            
             url: serviceUrl + '/countries' + `/${id}`,
             headers: authHeaders,
 
@@ -79,7 +80,7 @@ function solve(){
 
         let id  = $(this).parent()[0].id;
         let newName = {name: $(this).prev().val()};
-        
+
         $.ajax({
 
             type: 'PUT',
