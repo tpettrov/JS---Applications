@@ -49,9 +49,13 @@ function solve(){
         for(let country of countries) {
 
             let edit = $('<input type="button" value="Edit">');
+            let show = $('<input type="button" value="show">');
             let del = $('<input type="button" id="delBtn" value="Delete">');
-            let el = $('<input type="text">').val(country.name);
-            $('#countriesList').append($('<li>').attr('id', `${country._id}`).append(el).append(edit.click(editCountry)).append(del.click(deleteCountry)));
+            let el = $('<input type="text" id="name">').val(country.name);
+            $('#countriesList').append($('<li>').attr('id', `${country._id}`).append(el)
+                .append(edit.click(editCountry))
+                .append(del.click(deleteCountry))
+                .append(show).click(showTowns));
 
 
         }
@@ -90,6 +94,22 @@ function solve(){
 
 
         }).then(loadCountries);
+
+    }
+
+    function showTowns () {
+
+        let country = $(this).find('#name').val();
+        let query = {"country":country};
+
+        $.get({
+
+            url:serviceUrl + `/towns/?query={"country":"${country}"}`,
+            headers: authHeaders
+
+        }).then(function (result) {
+            $('#townsList').append($('<li>').text(result[0].name));
+        })
 
     }
 
